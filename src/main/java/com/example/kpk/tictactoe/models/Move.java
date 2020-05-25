@@ -2,34 +2,34 @@ package com.example.kpk.tictactoe.models;
 
 import javax.persistence.*;
 
+import com.example.kpk.tictactoe.utils.PositionConverter;
+
 @Entity(name = "move")
 public class Move {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
-    private int id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "game_id", nullable = false)
     private Game game;
 
     @Enumerated(EnumType.STRING)
-    private PlayerType PlayerType;
+    private PlayerType playerType;
 
-    @Column(name = "board_row", nullable = false)
-    private int boardRow;
-
-    @Column(name = "board_column", nullable = false)
-    private int boardColumn;
+    @Column(name = "board_position", nullable = false)
+    @Convert(converter = PositionConverter.class)
+    private Position boardPosition;
 
     @Column(name = "created", nullable = false)
     private Long created;
 
-    public int getId() {
+    public Long getId() {
         return this.id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -41,28 +41,20 @@ public class Move {
         this.game = game;
     }
 
-    public int getBoardRow() {
-        return this.boardRow;
-    }
-
-    public void setBoardRow(int boardRow) {
-        this.boardRow = boardRow;
-    }
-
-    public int getBoardColumn() {
-        return this.boardColumn;
-    }
-
-    public void setBoardColumn(int boardColumn) {
-        this.boardColumn = boardColumn;
-    }
-
     public PlayerType getPlayerType() {
-        return this.PlayerType;
+        return this.playerType;
     }
 
-    public void setPlayerType(PlayerType PlayerType) {
-        this.PlayerType = PlayerType;
+    public void setPlayerType(PlayerType playerType) {
+        this.playerType = playerType;
+    }
+
+    public Position getBoardPosition() {
+        return this.boardPosition;
+    }
+
+    public void setBoardPosition(Position boardPosition) {
+        this.boardPosition = boardPosition;
     }
 
     public Long getCreated() {
