@@ -3,7 +3,6 @@ package com.example.kpk.tictactoe.services;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import com.example.kpk.tictactoe.models.Position;
@@ -19,11 +18,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class MoveServiceImpl implements MoveService {
 
-    private static Random random = new Random();
-
     private MoveRepository moveRepository;
 
     private PositionService positionService;
+
+    private ComputerPlayerService computerPlayerService;
 
     @Autowired
     public void setMoveRepository(MoveRepository moveRepository) {
@@ -33,6 +32,11 @@ public class MoveServiceImpl implements MoveService {
     @Autowired
     public void setPositionService(PositionService positionService) {
         this.positionService = positionService;
+    }
+
+    @Autowired
+    public void setComputerPlayerService(ComputerPlayerService computerPlayerService) {
+        this.computerPlayerService = computerPlayerService;
     }
 
     @Override
@@ -59,13 +63,19 @@ public class MoveServiceImpl implements MoveService {
 
     @Override
     public Move getComputerMove(Game game) {
-        List<Position> positions = getEmptyPositions(game.getId());
-        int size = positions.size();
-        if (size == 0) {
-            return null;
-        }
+        List<Move> takenMoves = getTakenPositions(game.getId());
+        Position computerNextPosition = computerPlayerService.findBestPosition(takenMoves, game.getPlayerSymbol());
 
-        return addMove(new MoveDTO(game.getId(), positions.get(random.nextInt(size)), PlayerType.COMPUTER), game);
+        return addMove(new MoveDTO(game.getId(), computerNextPosition, PlayerType.COMPUTER), game);
+    }
+
+    private void validatePosition(MoveDTO move) {
+        List<Position> emptyPositions = getEmptyPositions(move.getGameId());
+        Position position = move.getPosition();
+        if (!emptyPositions.isEmpty() && !emptyPositions.contains(position)) {
+            throw new IllegalArgumentException(String.format("Position (%d, %d) is taken. Select an empty position.",
+                    position.getRow(), position.getColumn()));
+        }
     }
 
     private List<Move> findMovesForPlayer(Long gameId, PlayerType playerType) {
@@ -73,20 +83,15 @@ public class MoveServiceImpl implements MoveService {
     }
 
     private List<Position> getEmptyPositions(Long gameId) {
-        List<Position> takenPositions = getPositionsFromMoves(moveRepository.findAllByGameId(gameId));
+        List<Position> takenPositions = getPositionsFromMoves(getTakenPositions(gameId));
         return positionService.getFreePositions(new HashSet<Position>(takenPositions));
+    }
+
+    private List<Move> getTakenPositions(Long gameId) {
+        return moveRepository.findAllByGameId(gameId);
     }
 
     private List<Position> getPositionsFromMoves(List<Move> moves) {
         return moves.stream().map(Move::getBoardPosition).collect(Collectors.toList());
-    }
-
-    private void validatePosition(MoveDTO move) {
-        List<Position> emptyPositions = getEmptyPositions(move.getGameId());
-        Position position = move.getPosition();
-        if (!emptyPositions.contains(position)) {
-            throw new IllegalArgumentException(String.format("Position (%d, %d) is taken. Select an empty position.",
-                    position.getRow(), position.getColumn()));
-        }
     }
 }
