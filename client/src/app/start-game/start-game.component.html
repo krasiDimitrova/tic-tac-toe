@@ -1,0 +1,8 @@
+<div class="error" *ngIf="err">{{ err }}</div>
+<form [formGroup]="startGameForm" (ngSubmit)="onSubmit()">
+    <label for="playerSymbol">Choose your symbol</label>
+    <select formControlName="playerSymbol">
+        <option *ngFor="let symbol of playerSymbols | keyvalue" [value]="symbol.value">{{symbol.value}}</option>
+    </select>
+    <button type="submit">Start Game</button>
+</form>

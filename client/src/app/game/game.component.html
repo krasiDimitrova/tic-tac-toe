@@ -1,0 +1,16 @@
+<div class="error" *ngIf="err">{{ err }}</div>
+<app-start-game *ngIf="!game" (startedGame)="populateGame($event)"></app-start-game>
+
+<div *ngIf="game">
+    <table>
+        <tbody>
+            <tr *ngFor="let row of gameBoard; let r = index">
+                <td class="gameCell" *ngFor="let cell of row, let c = index" (click)="isCellEmpty(r, c) && makePlayerMove(r,c)">{{cell}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div *ngIf="hasGameEnded()">
+    <h3>{{ GAME_STATUS[game.gameStatus] }}</h3>
+</div>
