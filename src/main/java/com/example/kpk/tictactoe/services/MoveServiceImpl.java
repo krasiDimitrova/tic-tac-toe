@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import com.example.kpk.tictactoe.models.Position;
 import com.example.kpk.tictactoe.dtos.MoveDTO;
 import com.example.kpk.tictactoe.models.Game;
+import com.example.kpk.tictactoe.models.GameStatus;
 import com.example.kpk.tictactoe.models.Move;
 import com.example.kpk.tictactoe.models.PlayerType;
 import com.example.kpk.tictactoe.repositories.MoveRepository;
@@ -41,6 +42,7 @@ public class MoveServiceImpl implements MoveService {
 
     @Override
     public Move addMove(MoveDTO moveToAdd, Game game) {
+        validateGameIsNotEnded(game);
         validatePosition(moveToAdd);
         Move move = new Move();
         move.setBoardPosition(moveToAdd.getPosition());
@@ -67,6 +69,13 @@ public class MoveServiceImpl implements MoveService {
         Position computerNextPosition = computerPlayerService.findBestPosition(takenMoves, game.getPlayerSymbol());
 
         return addMove(new MoveDTO(game.getId(), computerNextPosition, PlayerType.COMPUTER), game);
+    }
+
+    private void validateGameIsNotEnded(Game game) {
+        if (game.getGameStatus() != GameStatus.RUNNING) {
+            throw new IllegalStateException(
+                    String.format("Game has status = %s and new moves cannot be added", game.getGameStatus()));
+        }
     }
 
     private void validatePosition(MoveDTO move) {

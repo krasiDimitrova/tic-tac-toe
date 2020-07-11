@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { of } from "rxjs";
+import { cloneDeep } from "lodash";
 import { PlayerSymbol, PlayerType } from "../models/player";
 import { Game, GameStatus } from "../models/game";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
@@ -67,21 +68,31 @@ describe("GameComponent", () => {
     expect(component.gameBoard[1][1]).toBe(PlayerSymbol.X);
   });
 
-  it("should make computer move and corresponding computer move", () => {
+  it("should make player move and corresponding computer move", () => {
     component.populateGame(testGame);
-    testGame.computerMove.position = { row: 1, column: 2 };
-    gameApiServiceStub.makeMove.and.callFake(() => of(testGame));
+    const currentGame = cloneDeep(testGame);
+    currentGame.computerMove.position = { row: 1, column: 2 };
+    gameApiServiceStub.makeMove.and.callFake(() => of(currentGame));
     component.makePlayerMove(0, 0);
     expect(component.gameBoard[0][0]).toBe(playerSymbol);
     expect(component.gameBoard[1][2]).toBe(PlayerSymbol.X);
-    expect(component.game).toBe(testGame);
+    expect(component.game).toEqual(currentGame);
+  });
+
+  it("should not make player move if game is ended", () => {
+    const currentGame = cloneDeep(testGame);
+    currentGame.gameStatus = GameStatus.LOST;
+    component.populateGame(currentGame);
+    component.makePlayerMove(0, 0);
+    expect(component.gameBoard[0][0]).toBe("");
   });
 
   it("should check the game status", () => {
     component.populateGame(testGame);
     expect(component.hasGameEnded()).toBeFalsy();
-    testGame.gameStatus = GameStatus.LOST;
-    gameApiServiceStub.makeMove.and.callFake(() => of(testGame));
+    const currentGame = cloneDeep(testGame);
+    currentGame.gameStatus = GameStatus.LOST;
+    gameApiServiceStub.makeMove.and.callFake(() => of(currentGame));
     component.makePlayerMove(0, 0);
     expect(component.hasGameEnded()).toBeTruthy();
   });

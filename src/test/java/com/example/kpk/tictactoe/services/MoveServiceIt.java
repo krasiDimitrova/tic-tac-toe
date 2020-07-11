@@ -69,6 +69,21 @@ public class MoveServiceIt {
     }
 
     @Test
+    public void testAddMoveEndedGame() {
+        Game game = testUtilityService.createGame(PlayerSymbol.X);
+        game.setGameStatus(GameStatus.TIE);
+        gameRepository.saveAndFlush(game);
+
+        MoveDTO moveToAdd = new MoveDTO();
+        moveToAdd.setGameId(game.getId());
+        moveToAdd.setPlayerType(PlayerType.PLAYER);
+        moveToAdd.setPosition(new Position(1, 1));
+
+        assertThrows(IllegalStateException.class, () -> moveService.addMove(moveToAdd, game));
+        assertEquals(0, moveRepository.findAll().size());
+    }
+
+    @Test
     public void testPlayerHasWon() {
         Game game = testUtilityService.createGame(PlayerSymbol.O);
         Long gameId = game.getId();
