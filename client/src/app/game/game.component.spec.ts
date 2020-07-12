@@ -35,6 +35,14 @@ describe("GameComponent", () => {
     makeMove: jasmine.createSpy("makeMove"),
   };
 
+  function testGameBoardIsEmpty() {
+    expect(component.gameBoard.length).toBeTruthy(3);
+    component.gameBoard.forEach((row) => {
+      expect(row.length).toBeTruthy(3);
+      row.forEach((cell) => expect(cell).toBe(""));
+    });
+  }
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [BrowserModule, HttpClientTestingModule],
@@ -55,11 +63,7 @@ describe("GameComponent", () => {
   });
 
   it("should init game board with empty strings", () => {
-    expect(component.gameBoard.length).toBeTruthy(3);
-    component.gameBoard.forEach((row) => {
-      expect(row.length).toBeTruthy(3);
-      row.forEach((cell) => expect(cell).toBe(""));
-    });
+    testGameBoardIsEmpty();
   });
 
   it("should populate game and make computer move with the correct computer symbol", () => {
@@ -102,5 +106,12 @@ describe("GameComponent", () => {
     const position = testGame.computerMove.position;
     expect(component.isCellEmpty(position.row, position.column)).toBeFalsy();
     expect(component.isCellEmpty(1, 1)).toBeTruthy();
+  });
+
+  it("should nullify game and clear gameBoard", () => {
+    component.populateGame(testGame);
+    component.clearGame();
+    expect(component.game).toBeNull();
+    testGameBoardIsEmpty();
   });
 });

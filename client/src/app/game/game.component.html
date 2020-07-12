@@ -9,6 +9,7 @@
         </tr>
     </tbody>
 </table>
-<div *ngIf="hasGameEnded()">
+<div *ngIf="hasGameEnded()" id="game-ended">
     <h3 id="game-over">{{ GAME_STATUS[game.gameStatus] }}</h3>
+    <button id="new-game-button" (click)="clearGame()">Play New Game</button>
 </div>

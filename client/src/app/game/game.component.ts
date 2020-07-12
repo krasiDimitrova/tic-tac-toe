@@ -68,6 +68,11 @@ export class GameComponent implements OnInit {
     return this.gameBoard[row][column] === "";
   }
 
+  clearGame() {
+    this.game = null;
+    this.gameBoard.forEach((row) => row.fill(""));
+  }
+
   private makeComputerMove() {
     let move = this.game.computerMove;
     if (move) {
