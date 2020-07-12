@@ -4,5 +4,5 @@ _ Angular JS
 
 Gameplay is in player vs computer mode.
 
-![Alt text](screenshots/StartGame.jpg?raw=true "Start game view")
+![Alt text](screenshots/StartGame.JPG?raw=true "Start game view")
 ![Alt text](screenshots/Gameplay.JPG?raw=true "Gameplay view")
