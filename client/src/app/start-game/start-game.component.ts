@@ -1,5 +1,5 @@
 import { Component, Output, OnInit, EventEmitter } from "@angular/core";
-import { FormGroup, FormBuilder } from "@angular/forms";
+import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { GameApiService } from "../services/game-api.service";
 import { Game } from "../models/game";
 import { PlayerSymbol } from "../models/player";
@@ -19,24 +19,29 @@ export class StartGameComponent implements OnInit {
 
   startGameForm: FormGroup;
 
+  subbmited = false;
+
   err: String;
 
   readonly playerSymbols = PlayerSymbol;
 
   ngOnInit() {
     this.startGameForm = this.formBuilder.group({
-      playerSymbol: [null],
+      playerSymbol: [null, Validators.required],
     });
   }
 
   onSubmit() {
-    let symbol = this.startGameForm.value.playerSymbol;
-    this.gameApiService.startGame(symbol).subscribe(
-      (game: Game) => {
-        game.playerSymbol = symbol;
-        this.startedGame.emit(game);
-      },
-      (err) => (this.err = err.message)
-    );
+    this.subbmited = true;
+    if (this.startGameForm.valid) {
+      let symbol = this.startGameForm.value.playerSymbol;
+      this.gameApiService.startGame(symbol).subscribe(
+        (game: Game) => {
+          game.playerSymbol = symbol;
+          this.startedGame.emit(game);
+        },
+        (err) => (this.err = err.message)
+      );
+    }
   }
 }

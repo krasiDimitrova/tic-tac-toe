@@ -55,7 +55,7 @@ describe("StartGameComponent", () => {
   });
 
   it("should emit created game on form submit", () => {
-    component.startGameForm.value.playerSymbol = playerSymbol;
+    component.startGameForm.controls["playerSymbol"].setValue(playerSymbol);
     component.onSubmit();
     expect(component.startedGame.emit).toHaveBeenCalledWith(testGame);
   });

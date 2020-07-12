@@ -1,8 +1,9 @@
 <div class="error" *ngIf="err">{{ err }}</div>
 <form [formGroup]="startGameForm" (ngSubmit)="onSubmit()" id="start-form">
     <label for="playerSymbol">Choose your symbol:</label>
-    <select formControlName="playerSymbol" id="symbol-dropdown">
+    <select formControlName="playerSymbol" id="symbol-dropdown" required>
         <option *ngFor="let symbol of playerSymbols | keyvalue" [value]="symbol.value">{{symbol.value}}</option>
     </select>
+    <p *ngIf="subbmited && startGameForm.controls['playerSymbol'].invalid" class="error">Player symbol is required!</p>
     <button type="submit" id="start-game-button">Start Game</button>
 </form>
