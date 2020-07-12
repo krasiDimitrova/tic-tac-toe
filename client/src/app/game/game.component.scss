@@ -1,6 +1,20 @@
+#game-board {
+  margin: 80px auto;
+}
 .gameCell {
-  border: 1px solid black;
-  width: 30px;
-  height: 30px;
+  border: 1px solid #81c4ea;
+  width: 80px;
+  height: 80px;
+  text-align: center;
+  font-size: 42px;
+  cursor: pointer;
+
+  &.disabled {
+    cursor: default;
+  }
+}
+
+#game-over {
+  font-size: 24px;
   text-align: center;
 }

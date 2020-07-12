@@ -1,0 +1,20 @@
+#start-form {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  width: 200px;
+  margin: 80px auto;
+}
+
+#symbol-dropdown {
+  margin: 10px 0;
+}
+
+#start-game-button {
+  border-radius: 20px;
+  border: 1px solid #81c4ea;
+  padding: 5px;
+  background-color: #b1dcf5;
+  outline: 0;
+  cursor: pointer;
+}
